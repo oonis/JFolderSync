@@ -185,6 +185,9 @@ public class DirectoryWatcher {
     keyRoots.put(watchable.register(watchService, new WatchEvent.Kind[] {ENTRY_CREATE, ENTRY_DELETE, ENTRY_MODIFY}), directory);
   }
 
+  /**
+   * Grabs the listener attached to the watcher.
+   */
   public DirectoryChangeListener getListener() {
     return listener;
   }
