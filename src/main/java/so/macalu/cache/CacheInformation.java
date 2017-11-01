@@ -1,4 +1,4 @@
-package so.macalu.Cache;
+package so.macalu.cache;
 
 import java.io.File;
 import java.io.IOException;
