@@ -36,7 +36,16 @@ lazy val `JFolderSync` = (project in file("."))
     )
   )
 
+publishMavenStyle := true
+publishTo := Some(
+  if (isSnapshot.value)
+    Opts.resolver.sonatypeSnapshots
+  else
+    Opts.resolver.sonatypeStaging
+)
+
 import ReleaseTransformations._
+releasePublishArtifactsAction := PgpKeys.publishSigned.value
 releaseProcess := Seq[ReleaseStep](
   checkSnapshotDependencies,
   inquireVersions,
@@ -45,7 +54,9 @@ releaseProcess := Seq[ReleaseStep](
   setReleaseVersion,
   commitReleaseVersion,
   tagRelease,
+  publishArtifacts,
   setNextVersion,
   commitNextVersion,
+  releaseStepCommand("sonatypeReleaseAll"),
   pushChanges
 )
