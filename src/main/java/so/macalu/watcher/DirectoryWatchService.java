@@ -1,8 +1,5 @@
 package so.macalu.watcher;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.io.IOException;
 import java.nio.file.*;
 import java.util.Arrays;
@@ -22,9 +19,8 @@ import static java.nio.file.StandardWatchEventKinds.*;
  * This class is kept lean by only keeping methods that are actually being
  * called.
  */
-public class DirectoryWatchService implements DirectoryWatchService, Runnable {
+public class DirectoryWatchService implements IDirectoryWatchService, Runnable {
 
-    private static final Logger LOGGER = LogManager.getLogger(SimpleDirectoryWatchService.class);
     private final WatchService mWatchService;
     private final AtomicBoolean mIsRunning;
     private final ConcurrentMap<WatchKey, Path> mWatchKeyToDirPathMap;
@@ -166,8 +162,8 @@ public class DirectoryWatchService implements DirectoryWatchService, Runnable {
 
         mListenerToFilePatternsMap.put(listener, patterns);
 
-        LOGGER.info("Watching files matching " + Arrays.toString(globPatterns)
-                + " under " + dirPath + " for changes.");
+        //LOGGER.info("Watching files matching " + Arrays.toString(globPatterns)
+        //        + " under " + dirPath + " for changes.");
     }
 
     /**
@@ -200,22 +196,19 @@ public class DirectoryWatchService implements DirectoryWatchService, Runnable {
      */
     @Override
     public void run() {
-        LOGGER.info("Starting file watcher service.");
+        //LOGGER.info("Starting file watcher service.");
 
         while (mIsRunning.get()) {
             WatchKey key;
             try {
                 key = mWatchService.take();
             } catch (InterruptedException e) {
-                LOGGER.info(
-                        DirectoryWatchService.class.getSimpleName()
-                        + " service interrupted."
-                );
+                //LOGGER.info(DirectoryWatchService.class.getSimpleName() + " service interrupted.");
                 break;
             }
 
             if (null == getDirPath(key)) {
-                LOGGER.error("Watch key not recognized.");
+                //LOGGER.error("Watch key not recognized.");
                 continue;
             }
 
@@ -232,6 +225,6 @@ public class DirectoryWatchService implements DirectoryWatchService, Runnable {
         }
 
         mIsRunning.set(false);
-        LOGGER.info("Stopping file watcher service.");
+        //LOGGER.info("Stopping file watcher service.");
     }
 }
