@@ -57,17 +57,27 @@ public class DirectoryWatchService implements DirectoryWatchService, Runnable {
         return Collections.newSetFromMap(newConcurrentMap());
     }
 
+    /**
+     * Convert a String to a <code>PathMatcher</code>.
+     * 
+     * @param globPattern <code>String</code> Pattern string.
+     * @return <code>PathMatcher</code> The PathMatcher representation.
+     */
     public static PathMatcher matcherForGlobExpression(String globPattern) {
         return FileSystems.getDefault().getPathMatcher("glob:" + globPattern);
     }
 
-    public static boolean matches(Path input, PathMatcher pattern) {
-        return pattern.matches(input);
-    }
-
-    public static boolean matchesAny(Path input, Set<PathMatcher> patterns) {
+    /**
+     * Determine if the input is covered by the patterns
+     * 
+     * @param input <code>Path</code> The input path.
+     * @param patterns <code>PathMatcher...</code> One or more patterns to compare to.
+     * 
+     * @return <code>boolean</code> Weather or not the input matches the patterns.
+     */
+    public static boolean matchesAny(Path input, PathMatcher... patterns) {
         for (PathMatcher pattern : patterns) {
-            if (matches(input, pattern)) {
+            if (pattern.matches(input)) {
                 return true;
             }
         }
@@ -101,7 +111,6 @@ public class DirectoryWatchService implements DirectoryWatchService, Runnable {
             // Overflow occurs when the watch event queue is overflown
             // with events.
             if (eventKind.equals(OVERFLOW)) {
-                // TODO: Notify all listeners.
                 return;
             }
 
@@ -183,7 +192,6 @@ public class DirectoryWatchService implements DirectoryWatchService, Runnable {
      */
     @Override
     public void stop() {
-        // Kill thread lazily
         mIsRunning.set(false);
     }
 
