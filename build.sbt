@@ -25,7 +25,8 @@ lazy val `JFolderSync` = (project in file("."))
   .settings(
     crossPaths := false,
     libraryDependencies ++= Seq(
-      "org.zeromq" % "jeromq" % "0.4.2"
+      "org.zeromq" % "jeromq" % "0.4.2",
+      "org.json" % "json" % "20170516"
     )
   )
 
