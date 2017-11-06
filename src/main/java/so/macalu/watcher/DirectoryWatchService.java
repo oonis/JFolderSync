@@ -63,15 +63,19 @@ public class DirectoryWatchService implements IDirectoryWatchService, Runnable {
         return FileSystems.getDefault().getPathMatcher("glob:" + globPattern);
     }
 
+    public static boolean match(Path input, PathMatcher pattern) {
+        return pattern.matches(input);
+    }
+
     /**
      * Determine if the input is covered by the patterns
      * 
      * @param input <code>Path</code> The input path.
-     * @param patterns <code>PathMatcher...</code> One or more patterns to compare to.
+     * @param patterns <code>Set<PathMatcher></code> One or more patterns to compare to.
      * 
      * @return <code>boolean</code> Weather or not the input matches the patterns.
      */
-    public static boolean matchesAny(Path input, PathMatcher... patterns) {
+    public static boolean matchesAny(Path input, Set<PathMatcher> patterns) {
         for (PathMatcher pattern : patterns) {
             if (pattern.matches(input)) {
                 return true;
@@ -139,7 +143,6 @@ public class DirectoryWatchService implements IDirectoryWatchService, Runnable {
         }
 
         if (!mDirPathToListenersMap.containsKey(dir)) {
-            // May throw
             WatchKey key = dir.register(
                     mWatchService, ENTRY_CREATE, ENTRY_MODIFY, ENTRY_DELETE
             );
@@ -157,13 +160,11 @@ public class DirectoryWatchService implements IDirectoryWatchService, Runnable {
         }
 
         if (patterns.isEmpty()) {
-            patterns.add(matcherForGlobExpression("*")); // Match everything if no filter is found
+            // Match everything if no filter is found
+            patterns.add(matcherForGlobExpression("*"));
         }
 
         mListenerToFilePatternsMap.put(listener, patterns);
-
-        //LOGGER.info("Watching files matching " + Arrays.toString(globPatterns)
-        //        + " under " + dirPath + " for changes.");
     }
 
     /**
@@ -196,8 +197,6 @@ public class DirectoryWatchService implements IDirectoryWatchService, Runnable {
      */
     @Override
     public void run() {
-        //LOGGER.info("Starting file watcher service.");
-
         while (mIsRunning.get()) {
             WatchKey key;
             try {
