@@ -1,5 +1,7 @@
 package so.macalu.sync;
 
+import java.nio.file.Path;
+
 public interface ISyncService {
     /**
      * Tell the implementation that a file has been updated.
